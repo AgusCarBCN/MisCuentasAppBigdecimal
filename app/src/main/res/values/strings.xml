@@ -222,7 +222,7 @@ Add a new account and configure the currency format.
     <string name="attributionicons">made by</string>
     <string name="atributions">Attributions</string>
     <string name="iconsAttribution">Icons</string>
-    <string name="version">Version 5.0</string>
+    <string name="version">Version 5.1</string>
     <string name="description">
 
     \t\t\tMy Accounts is an application designed to simplify the management of your income and expenses. With this tool, you can efficiently handle transactions for one to several accounts, add income, record expenses, transfer funds between  accounts, and generate detailed statistics through transaction searches.

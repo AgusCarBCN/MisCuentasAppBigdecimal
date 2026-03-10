@@ -216,7 +216,7 @@ Añade una nueva cuenta y configura el formato de la divisa.
     <string name="iconsAttribution">Iconos de rango de fecha</string>
     <string name="attributionicon"> creado por </string>
     <string name="attributionicons">creados por</string>
-    <string name="version">Version 5.0</string>
+    <string name="version">Version 5.1</string>
     <string name="description">
     \t\t\tMis cuentas es una aplicación diseñada para facilitar el control de tus ingresos y gastos. Con esta herramienta, puedes gestionar eficientemente los movimientos de una a varias cuentas, añadir ingresos, registrar gastos, realizar transferencias entre  cuentas y obtener estadísticas detalladas mediante búsquedas de movimientos.
 
