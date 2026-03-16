@@ -1,20 +1,53 @@
 package carnerero.agustin.cuentaappandroid.notification
 
 
+import android.annotation.SuppressLint
+import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import carnerero.agustin.cuentaappandroid.R
 import carnerero.agustin.cuentaappandroid.utils.Utils
 import kotlinx.coroutines.flow.first
 import java.math.BigDecimal
+@SuppressLint("LocalContextGetResourceValueCall")
+@Composable
+fun NotificationObserver(
+    notificationViewModel: NotificationViewModel,
+    notificationService: NotificationService
+) {
+    val context = LocalContext.current
 
+    LaunchedEffect(Unit) {
+        notificationViewModel.notificationEvent.collect { event ->
 
+            when(event) {
+                is NotificationEvent.CategoryNotification -> {
+                    notificationService.showBasicNotification(
+                        title = context.getString(event.titleRes),
+                        message = event.message,
+                        iconResource = event.iconRes
+                    )
+                }
+                is NotificationEvent.AccountNotification -> {
+                    notificationService.showBasicNotification(
+                        title = context.getString(event.titleRes),
+                        message = event.message,
+                        iconResource = event.iconRes
+                    )
+                }
+            }
+        }
+    }
+}
+
+/*
 @Composable
 fun NotificationCategoriesObserver(
     notificationViewModel: NotificationViewModel,
@@ -139,5 +172,5 @@ fun NotificationAccountObserver(
         }
     }
 }
-
+*/
 

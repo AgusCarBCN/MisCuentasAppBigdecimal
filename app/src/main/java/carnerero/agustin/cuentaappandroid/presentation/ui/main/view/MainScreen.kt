@@ -25,8 +25,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import carnerero.agustin.cuentaappandroid.R
 import carnerero.agustin.cuentaappandroid.admob.AdmobBanner
-import carnerero.agustin.cuentaappandroid.notification.NotificationAccountObserver
-import carnerero.agustin.cuentaappandroid.notification.NotificationCategoriesObserver
+import carnerero.agustin.cuentaappandroid.notification.NotificationObserver
 import carnerero.agustin.cuentaappandroid.notification.NotificationService
 import carnerero.agustin.cuentaappandroid.notification.NotificationViewModel
 import carnerero.agustin.cuentaappandroid.notification.RequestNotificationPermissionDialog
@@ -62,14 +61,7 @@ fun MainScreen(
     val scope = rememberCoroutineScope()
     val notificationViewModel: NotificationViewModel= hiltViewModel()
     if (state.isGranted) {
-        NotificationCategoriesObserver(
-            notificationViewModel,
-            notificationService
-        )
-        NotificationAccountObserver(
-            notificationViewModel,
-            notificationService
-        )
+        NotificationObserver(notificationViewModel,notificationService)
     }
 
     val isPortrait=orientation== OrientationApp.Portrait
