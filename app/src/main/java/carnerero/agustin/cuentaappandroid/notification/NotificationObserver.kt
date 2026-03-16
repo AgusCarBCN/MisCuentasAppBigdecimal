@@ -11,6 +11,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import carnerero.agustin.cuentaappandroid.R
 import carnerero.agustin.cuentaappandroid.utils.Utils
+import kotlinx.coroutines.flow.first
 import java.math.BigDecimal
 
 
@@ -34,7 +35,7 @@ fun NotificationCategoriesObserver(
         LaunchedEffect(category.id) {
             expensesByCategory = notificationViewModel.sumOfExpensesByCategories(category.id,
                 category.fromDate,
-                category.toDate)
+                category.toDate).first()
         }
 
         // Only proceed with notifications if expensesByCategory has been loaded
@@ -97,7 +98,7 @@ fun NotificationAccountObserver(
         LaunchedEffect(account.id) {
             expensesByAccounts = notificationViewModel.sumOfExpensesByAccount(account.id,
                 account.fromDate,
-                account.toDate)
+                account.toDate).first()
 
         }
 

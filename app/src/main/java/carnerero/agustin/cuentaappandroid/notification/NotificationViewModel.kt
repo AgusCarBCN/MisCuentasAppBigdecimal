@@ -18,8 +18,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.IOException
@@ -61,24 +63,30 @@ class NotificationViewModel @Inject constructor(
             }
         }
     }
+
     fun updateExpenseAccountsPercentages() {
         viewModelScope.launch {
 
             val accounts = uiState.value.accountsChecked
+
             if (accounts.isEmpty()) {
                 _uiState.update {
                     it.copy(expensePercentageByAccount = emptyMap())
                 }
                 return@launch
             }
+
             val percentageMap = accounts.associateWith { account ->
+
                 val expenses = sumOfExpensesByAccount(
                     account.id,
                     account.fromDate,
                     account.toDate
-                )
+                ).first()
+
                 calculatePercentage(expenses, account.spendingLimit)
             }
+
             _uiState.update {
                 it.copy(expensePercentageByAccount = percentageMap)
             }
@@ -88,26 +96,30 @@ class NotificationViewModel @Inject constructor(
         viewModelScope.launch {
 
             val categories = uiState.value.categoriesChecked
+
             if (categories.isEmpty()) {
                 _uiState.update {
                     it.copy(expensePercentageByCategory = emptyMap())
                 }
                 return@launch
             }
+
             val percentageMap = categories.associateWith { category ->
+
                 val expenses = sumOfExpensesByCategories(
                     category.id,
                     category.fromDate,
                     category.toDate
-                )
+                ).first()
+
                 calculatePercentage(expenses, category.spendingLimit)
             }
+
             _uiState.update {
                 it.copy(expensePercentageByCategory = percentageMap)
             }
         }
     }
-
 
     private fun calculatePercentage(
         expenses: BigDecimal,
@@ -124,22 +136,16 @@ class NotificationViewModel @Inject constructor(
         accountId: Int,
         fromDate: String,
         toDate: String
-    ): BigDecimal =
-        try {
-            getSumExpensesByAccount.invoke(accountId, fromDate, toDate)
-        } catch (_: IOException) {
-            BigDecimal.ZERO
-        } as BigDecimal
+    ): Flow<BigDecimal> =
+        getSumExpensesByAccount.invoke(accountId, fromDate, toDate)
+            .map { it ?: BigDecimal.ZERO }
 
     fun sumOfExpensesByCategories(
-         categoryId: Int,
+        categoryId: Int,
         fromDate: String,
         toDate: String
-    ): BigDecimal =
-        try {
-            getSumExpensesByCategory.invoke(categoryId, fromDate, toDate)
-        } catch (_: IOException) {
-            BigDecimal.ZERO
-        } as BigDecimal
+    ): Flow<BigDecimal> =
+        getSumExpensesByCategory.invoke(categoryId, fromDate, toDate)
+            .map { it ?: BigDecimal.ZERO }
 
 }
