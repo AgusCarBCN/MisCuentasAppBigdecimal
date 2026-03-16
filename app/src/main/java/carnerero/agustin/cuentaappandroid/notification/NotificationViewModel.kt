@@ -1,5 +1,6 @@
 package carnerero.agustin.cuentaappandroid.notification
 
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import carnerero.agustin.cuentaappandroid.R
@@ -11,6 +12,7 @@ import carnerero.agustin.cuentaappandroid.domain.database.categoryusecase.GetAll
 import carnerero.agustin.cuentaappandroid.domain.database.entriesusecase.GetSumOfExpensesByCategoryAndDateUseCase
 import carnerero.agustin.cuentaappandroid.domain.database.entriesusecase.GetSumTotalExpensesByAccountUseCase
 import carnerero.agustin.cuentaappandroid.domain.datastore.GetCurrencyCodeUseCase
+import carnerero.agustin.cuentaappandroid.utils.Utils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -91,20 +93,21 @@ class NotificationViewModel @Inject constructor(
             categories.forEach { category ->
                 val expenses = sumOfExpensesByCategories(category.id, category.fromDate, category.toDate).first()
                 val percentage = calculatePercentage(expenses, category.spendingLimit)
+                val currencyCode=_uiState.value.currencyCode
 
-                val message = when {
-                    percentage > 0.8f && percentage < 1.0f ->
-                        "${R.string.expenseslimit80}\nGasto: ${expenses}"
-                    percentage >= 1.0f ->
-                        "${R.string.expenseslimit}\nGasto: ${expenses}"
-                    else -> null
+                val message = Utils.numberFormat(expenses, currencyCode)
+                val titleRes=when{
+                    percentage > 0.8f && percentage < 1.0f ->R.string.expenseslimit80
+                    percentage >= 1.0f ->R.string.expenseslimit
+                    else->R.string.expenselimitOkAccount
                 }
+
 
                 message?.let {
                     _notificationEvent.emit(
                         NotificationEvent.CategoryNotification(
                             categoryId = category.id,
-                            titleRes = R.string.categoryespendingcontrol,
+                            titleRes = titleRes,
                             message = it,
                             iconRes = category.iconResource
                         )
@@ -120,20 +123,21 @@ class NotificationViewModel @Inject constructor(
             accounts.forEach { account ->
                 val expenses = sumOfExpensesByAccount(account.id, account.fromDate, account.toDate).first()
                 val percentage = calculatePercentage(expenses, account.spendingLimit)
+                val currencyCode=_uiState.value.currencyCode
+                val message =
+                    "${account.name}: ${Utils.numberFormat(expenses, currencyCode)}"
 
-                val message = when {
-                    percentage > 0.8f && percentage < 1.0f ->
-                        "${R.string.expenseslimit80}\nGasto: ${expenses}"
-                    percentage >= 1.0f ->
-                        "${R.string.expenseslimit}\nGasto: ${expenses}"
-                    else -> null
+                val titleRes=when{
+                    percentage > 0.8f && percentage < 1.0f ->R.string.expenseslimit80
+                    percentage >= 1.0f ->R.string.expenseslimit
+                    else->R.string.expenselimitOkAccount
                 }
 
                 message?.let {
                     _notificationEvent.emit(
                         NotificationEvent.AccountNotification(
                             accountId = account.id,
-                            titleRes = R.string.accountespendingcontrol,
+                            titleRes = titleRes,
                             message = it,
                             iconRes = R.drawable.importoption
                         )
