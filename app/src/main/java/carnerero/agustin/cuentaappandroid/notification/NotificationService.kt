@@ -21,7 +21,7 @@ class NotificationService(
                 .setContentText(message)                      // Establece el texto del contenido de la notificación
                 .setSmallIcon(iconResource)                   // Asigna el icono pequeño que se mostrará con la notificación
                 .setPriority(NotificationManager.IMPORTANCE_HIGH)     // Define la prioridad como alta para alertas visibles y/o sonoras
-                .setAutoCancel(true)                                  // Hace que la notificación se cancele automáticamente cuando el usuario la toca
+                .setAutoCancel(true)                  // Hace que la notificación se cancele automáticamente cuando el usuario la toca
                 .build()                                              // Construye la notificación
 
             // Muestra la notificación usando notificationManager.notify()
